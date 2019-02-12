@@ -14,6 +14,8 @@ filebeat:
         - /var/log/syslog
         - /var/log/auth.log
       document_type: syslog
+    - paths: # all logs from host
+        - /var/dockerhost/log/*
 
 processors:
   - add_cloud_metadata: ~
