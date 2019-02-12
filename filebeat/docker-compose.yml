@@ -1,5 +1,11 @@
 version: "3.7"
 
 services:
-	filebeat:
-		image: dbertolotto/filebeat:6.6.0
+  filebeat:
+    image: dbertolotto/filebeat:6.6.0
+    user: root
+    environment:
+      - strict.perms=false
+    volumes:
+      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"

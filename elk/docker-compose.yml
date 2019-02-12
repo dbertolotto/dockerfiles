@@ -1,8 +1,37 @@
 version: "3.7"
+
 services:
-        elk:
-                image: sebp/elk:666
-                ports:
-                        - "5601:5601"
-                        - "9200:9200"
-                        - "5044:5044"
+
+  elk:
+    image: sebp/elk:660
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+    networks:
+      elknet:
+        aliases:
+          - elk
+  
+  filebeat:
+    image: dbertolotto/filebeat:6.6.0
+    user: root
+    environment:
+      - strict.perms=false
+    volumes:
+      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      elknet:
+        aliases:
+          - filebeat
+
+  pylog:
+    image: dbertolotto/python-log-generator
+    networks:
+      elknet:
+        aliases:
+          - pylog
+
+networks:
+  elknet:
