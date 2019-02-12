@@ -1,0 +1,5 @@
+version: "3.7"
+
+services:
+	filebeat:
+		image: dbertolotto/filebeat:6.6.0
