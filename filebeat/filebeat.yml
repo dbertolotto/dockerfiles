@@ -1,0 +1,33 @@
+#filebeat.config:
+#  modules:
+#    path: ${path.config}/module/*.yml
+#    reload.enabled: false
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+
+filebeat:
+  prospectors:
+    - paths: # all logs from this container
+        - /var/log/syslog
+        - /var/log/auth.log
+      document_type: syslog
+    - paths: # all logs from host
+        - /var/dockerhost/log/*
+        - /var/dockerhost/log/*/*
+
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+
+output:
+  logstash:
+    enabled: true
+    hosts:
+      - elk:5044
+#    ssl:
+#      certificate_authorities:
+#        - /etc/pki/tls/certs/logstash-beats.crt
+    timeout: 15
