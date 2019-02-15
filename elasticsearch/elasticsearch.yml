@@ -1,0 +1,9 @@
+path:
+  data: /var/data/elasticsearch
+  logs: /var/log/elasticsearch
+cluster:
+  name: logging-cluster
+node:
+  name: elasticsearch-node
+#network:
+#  host: 192.168.1.10

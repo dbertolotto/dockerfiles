@@ -1,8 +1,9 @@
 FROM dbertolotto/openjdk:jre-8
 
 ARG VERSION=6.6.0
+ARG ES_PATH_CONF=/etc/elasticsearch
 
-# install filebeat from debian package
+### install elasticsearch from debian package
 RUN apt-get update && \
     apt-get install -y wget gnupg apt-transport-https && \
     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
@@ -12,6 +13,13 @@ RUN apt-get update && \
 apt-get autoremove --purge -y wget gnupg apt-transport-https && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
+
+COPY elasticsearch.yaml ${ES_PATH_CONF}/elasticsearch.yaml
+COPY jvm.options ${ES_PATH_CONF}/jvm.options
+COPY log4j2.properties ${ES_PATH_CONF}/log4j2.properties
+
+### Keystore creation for secure settings
+#RUN elasticsearch-keystore create
 
 # setup users, groups and permissions
 #RUN groupadd --gid 1000 filebeat && \
