@@ -28,7 +28,7 @@ RUN mkdir /usr/share/filebeat/data && \
     chmod 0770 /usr/share/filebeat/logs
 
 # add config file
-ADD filebeat.yml /usr/share/filebeat/filebeat.yml
+COPY filebeat.yml /usr/share/filebeat/filebeat.yml
 RUN chown root:filebeat /usr/share/filebeat/filebeat.yml && \
     chmod 0640 /usr/share/filebeat/filebeat.yml
 
