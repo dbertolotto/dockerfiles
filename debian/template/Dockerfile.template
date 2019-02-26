@@ -1,2 +1,22 @@
 FROM scratch
-ADD ../${file}
+ADD ${file}
+
+LABEL org.label-schema.schema-version = "1.0" 
+      org.label-schema.build-date = ${imgdate}
+      org.label-schema.name = ${imgname}
+#description	org.label-schema.description = "This service does awesome things with other things"	Text description of the image. May contain up to 300 characters.
+#usage	org.label-schema.usage= "/usr/doc/app-usage.txt"	Link to a file in the container or alternatively a URL that provides usage instructions. If a URL is given it SHOULD be specific to this version of the image e.g. http://docs.example.com/v1.2/usage rather than http://docs.example.com/usage
+#url	org.label-schema.url="http://postgresql.org"	URL of website with more information about the product or service provided by the container.
+#vcs-url	org.label-schema.vcs-url = "https://github.com/nginx/nginx"	URL for the source code under version control from which this container image was built.
+#vcs-ref	org.label-schema.vcs-ref = "279FA63"	Identifier for the version of the source code from which this image was built. For example if the version control system is git this is the SHA.
+#vendor	org.label-schema.vendor = "Stark Industries"	The organization that produces this image.
+#version	org.label-schema.version = "1.2.3" org.label-schema.version = "Beta4.2" org.label-schema.version = "1.2.2-dirty" org.label-schema.version = "my-test"	Release identifier for the contents of the image. This is entirely up to the user and could be a numeric version number like 1.2.3, or a text label.
+#The version MAY match a label or tag in the source code repository.
+#You should make sure that only images that exactly reflect a version of code should have that version label. If Julia finds a version 0.7.1 in a repository she SHOULD be able to infer this matches version 0.7.1 of the associated code (and in particular, not 0.7.1 plus some later commits).
+#You SHOULD omit the version label, or use a marker like “dirty” or “test” to indicate when a container image does not match a labelled / tagged version of the code.
+#docker.cmd	org.label-schema.docker.cmd= "docker run -d -p 5000:5000 -v config.json:/etc/config.json myapp"	How to run a container based on the image under the Docker runtime.
+#docker.cmd.devel	org.label-schema.docker.cmd.devel = "docker run -d -p 5050:5050 -e ENV=DEV myapp"	How to run the container in development mode under the Docker runtime e.g. with debug tooling or more verbose output.
+#docker.cmd.test	org.label-schema.docker.cmd.test = "docker run myapp runtests"	How to run the bundled test-suite for the image under the Docker runtime. MUST execute tests then exit, returning output on stdout and exit with a non-zero exit code on failure.
+#docker.cmd.debug	org.label-schema.docker.debug = "docker exec -it $CONTAINER /bin/redis-cli"	How to get an appropriate interactive shell for debugging on the container under Docker.
+#docker.cmd.help	org.label-schema.docker.cmd.help = "docker exec -it $CONTAINER /bin/app --help"	How to output help from the image under the docker runtime. The container MUST print this information to stdout and then exit.
+#docker.params	org.label-schema.docker.params = "NO_THREADS=integer number of threads to launch"	Applicable environment variables for the Docker runtime. Multiple environment variables can be specified by separating with commas.
