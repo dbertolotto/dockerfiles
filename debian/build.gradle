@@ -7,51 +7,34 @@ ext {
   tmpdocker = 'docker'
   tmpfile = 'tmpfile.tar'
   builddir = buildDir.absolutePath + '/' + ver
+  templateDir = 'template'
 }
 
-task prepareDir {
-  doLast {
-    mkdir builddir + '/' + tmpchr
-  }
+task copyBuild (type: Copy) {
+  from templateDir + '/build.template'
+  into buildDir.absolutePath + '/' + ver
+  rename { file -> 'build' }
+  expand(architecture: arch, variant: var, version: ver, exclude: excl, tempchroot: tmpchr, tempfile: tmpfile)
 }
 
-task aptDeps (type: Exec) {
-  commandLine 'apt-get','-y','install','debootstrap'
-}
-
-task debootstrap (type: Exec) {
+task chrBuild (type: Exec) {
   workingDir builddir
-  commandLine 'debootstrap', '--arch='+project.ext.arch, '--exclude='+project.ext.excl, '--variant='+project.ext.var, project.ext.ver, project.ext.tmpchr, 'http://deb.debian.org/debian/'
+  commandLine 'bash','build'
 }
 
-task chrAptClean (type: Exec) {
-  workingDir builddir
-  commandLine 'chroot',tmpchr,'apt-get','-y','clean'
-}
-
-task chrAptRemove (type: Exec) {
-  workingDir builddir
-  commandLine 'chroot',tmpchr,'rm','-rf','/var/lib/apt/lists'
-}
-
-task chrTar (type: Exec) {
-  workingDir builddir
-  commandLine 'tar','-C',tmpchr,'-cf',tmpfile,'.'
-}
-
-task prepareDocker (type: Copy) {
-  from "./Dockerfile.template"
-  into builddir + '/' + tmpdocker
+task copyDocker (type: Copy) {
+  from templateDir + './Dockerfile.template'
+  into buildDir.absolutePath + '/' + ver
   rename { file -> 'Dockerfile' }
   expand(file: tmpfile)
 }
 
 task build (type: GradleBuild) {
-  tasks = ['clean','prepareDir','aptDeps','debootstrap','chrAptClean','chrAptRemove','chrTar']
+  tasks = ['copyBuild','chrBuild',]
 }
 
 task dockerBuild (type: GradleBuild) {
-  tasks = ['build','prepareDocker']
+  tasks = ['build','copyDocker']
 }
 
 task clean (type:Delete) {

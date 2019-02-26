@@ -1,34 +1,14 @@
 #!/bin/bash
 
-# handling input
-if [ -z $VARIANT ]
-then
-	VARFLAG=""
-	IMGSUFFIX=""
-else
-	VARFLAG="--variant=$VARIANT"
-	IMGSUFFIX="-$VARIANT"
-fi
-
-if [ -z $EXCLUDE ]
-then
-	EXCLFLAG=""
-else
-        EXCLFLAG="--exclude=$EXCLUDE"
-fi
-
 # prepare
-rm -rf $TEMPCHROOT
+rm -rf ${tempchroot}
 apt-get -y install debootstrap
-mkdir $TEMPCHROOT
+mkdir ${tempchroot}
 # populate chroot
-debootstrap --arch=$ARCH $EXCLFLAG $VARFLAG $VERSION $TEMPCHROOT http://deb.debian.org/debian/
+debootstrap --arch=${architecture} --exclude=${exclude} --variant=${variant} ${version} ${tempchroot} http://deb.debian.org/debian/
 # clean up space
-chroot $TEMPCHROOT apt-get -y clean
-chroot $TEMPCHROOT rm -rf /var/lib/apt/lists
+chroot ${tempchroot} apt-get -y clean
+chroot ${tempchroot} rm -rf /var/lib/apt/lists
 # create tarred file
-tar -C $TEMPCHROOT -cf $TEMPFILE .
+tar -C ${tempchroot} -cf ${tempfile} .
 
-#docker import - debian-$VERSION$IMGSUFFIX
-#docker tag debian-$VERSION$IMGSUFFIX ${DOCKREPO}:$VERSION$IMGSUFFIX
-#docker push ${DOCKREPO}:$VERSION$IMGSUFFIX
