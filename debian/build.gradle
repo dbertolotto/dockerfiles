@@ -26,11 +26,11 @@ task copyDocker (type: Copy) {
   from templateDir + './Dockerfile.template'
   into buildDir.absolutePath + '/' + ver
   rename { file -> 'Dockerfile' }
-  expand(file: tmpfile)
+  expand(file: tmpfile, imgname: imgname, imgdata: getDate())
 }
 
 task build (type: GradleBuild) {
-  tasks = ['copyBuild','chrBuild',]
+  tasks = ['copyBuild','chrBuild']
 }
 
 task dockerBuild (type: GradleBuild) {

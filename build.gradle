@@ -38,3 +38,7 @@ allprojects {
     }
   }
 }
+
+def getDate() {
+    return new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+}
