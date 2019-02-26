@@ -1,1 +1,5 @@
 # Custom settings for the JVM
+# min heap size
+-Xms1g
+# max heap size
+-Xmx1g

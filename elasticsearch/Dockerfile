@@ -10,7 +10,7 @@ RUN apt-get update && \
     echo "deb https://artifacts.elastic.co/packages/oss-6.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-6.x.list && \
     apt-get update && \
     apt-get install -y elasticsearch-oss=$VERSION && \
-apt-get autoremove --purge -y wget gnupg apt-transport-https && \
+    apt-get autoremove --purge -y wget gnupg apt-transport-https && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -19,14 +19,15 @@ COPY jvm.options ${ES_PATH_CONF}/jvm.options
 COPY log4j2.properties ${ES_PATH_CONF}/log4j2.properties
 
 ### Keystore creation for secure settings
-#RUN elasticsearch-keystore create
+RUN elasticsearch-keystore create
 
 # setup users, groups and permissions
-#RUN groupadd --gid 1000 filebeat && \
-#    useradd --uid 1000 --gid 1000 --home /usr/share/filebeat filebeat
+RUN groupadd --gid 1000 elasticsearch && \
+    useradd --uid 1000 --gid 1000 --home /usr/share/elasticsearch elasticsearch
 #
-#RUN mkdir /usr/share/filebeat/data && \
-#    mkdir /usr/share/filebeat/logs && \
+RUN mkdir /usr/share/elasticsearch/config && \
+    mkdir /usr/share/elasticsearch/data && \
+    mkdir /usr/share/elasticsearch/logs && \
 #    chown -R root:filebeat /usr/share/filebeat && \
 #    find /usr/share/filebeat -type d -exec chmod 0750 {} \; && \
 #    find /usr/share/filebeat -type f -exec chmod 0640 {} \; && \
