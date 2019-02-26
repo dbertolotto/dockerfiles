@@ -16,7 +16,7 @@ task copyChroot (type: Copy) {
   from templateDir + '/build.template'
   into buildDir.absolutePath + '/' + ver
   rename { file -> 'build' }
-  expand(architecture: arch, variant: var, version: ver, exclude: excl, tempchroot: tmpchr, tempfile: tmpfile)
+  expand(architecture: arch, variant: var, version: ver,  exclude: excl, tempchroot: tmpchr, tempfile: tmpfile)
 }
 
 task buildChroot (type: Exec) {
@@ -26,10 +26,11 @@ task buildChroot (type: Exec) {
 }
 
 task copyDocker (type: Copy) {
-  from templateDir + '/Dockerfile.template'
-  into buildDir.absolutePath + '/' + ver
-  rename { file -> 'Dockerfile' }
-  expand(file: tmpfile, imgname: imgname, imgdate: getDate())
+  concat('df',templateDir + '/Dockerfile.template', '../template/Dockerfile-labels.template')
+  //from df
+  //into buildDir.absolutePath + '/' + ver
+  //rename { file -> 'Dockerfile' }
+  //expand(file: tmpfile, imgname: imgname, imgdate: getDate())
 }
 
 task buildDocker (type: Exec) {

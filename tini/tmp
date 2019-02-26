@@ -1,1 +1,0 @@
-The command '/bin/sh -c gpgv --keyring hkp://p80.pool.sks-keyservers.net:80 /tini.asc' returned a non-zero code: 2

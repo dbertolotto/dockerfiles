@@ -39,6 +39,11 @@ allprojects {
   }
 }
 
+
 def getDate() {
     return new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+}
+
+def concat(outfile, String... infiles) {
+  (new File(outfile)).text = files(*infiles).collect{it.getText()}.join("\n")
 }
