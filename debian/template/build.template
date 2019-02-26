@@ -11,4 +11,6 @@ chroot ${tempchroot} apt-get -y clean
 chroot ${tempchroot} rm -rf /var/lib/apt/lists
 # create tarred file
 tar -C ${tempchroot} -cf ${tempfile} .
+# remove build dir
+rm -rf ${tempchroot}
 

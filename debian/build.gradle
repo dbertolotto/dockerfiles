@@ -8,33 +8,46 @@ ext {
   tmpfile = 'tmpfile.tar'
   builddir = buildDir.absolutePath + '/' + ver
   templateDir = 'template'
+  dockername = 'dbertolotto/debian/'
+  imgname = dockername + ver + ':' + var
 }
 
-task copyBuild (type: Copy) {
+task copyChroot (type: Copy) {
   from templateDir + '/build.template'
   into buildDir.absolutePath + '/' + ver
   rename { file -> 'build' }
   expand(architecture: arch, variant: var, version: ver, exclude: excl, tempchroot: tmpchr, tempfile: tmpfile)
 }
 
-task chrBuild (type: Exec) {
+task buildChroot (type: Exec) {
+  dependsOn 'copyChroot'
   workingDir builddir
   commandLine 'bash','build'
 }
 
 task copyDocker (type: Copy) {
-  from templateDir + './Dockerfile.template'
+  from templateDir + '/Dockerfile.template'
   into buildDir.absolutePath + '/' + ver
   rename { file -> 'Dockerfile' }
-  expand(file: tmpfile, imgname: imgname, imgdata: getDate())
+  expand(file: tmpfile, imgname: imgname, imgdate: getDate())
 }
 
-task build (type: GradleBuild) {
-  tasks = ['copyBuild','chrBuild']
+task buildDocker (type: Exec) {
+  dependsOn 'copyDocker'
+  workingDir builddir
+  commandLine 'docker','build','-t',imgname,'.'
+}
+
+task chrootBuild (type: GradleBuild) {
+  tasks = ['copyChroot','buildChroot']
 }
 
 task dockerBuild (type: GradleBuild) {
-  tasks = ['build','copyDocker']
+  tasks = ['copyDocker','buildDocker']
+}
+
+task build (type: GradleBuild) {
+  tasks = ['chrootBuild','dockerBuild']
 }
 
 task clean (type:Delete) {
