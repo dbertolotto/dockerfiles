@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# handling input
+if [ -z $VARIANT ]
+then
+	VARFLAG=""
+	IMGSUFFIX=""
+else
+	VARFLAG="--variant=$VARIANT"
+	IMGSUFFIX="-$VARIANT"
+fi
+
+if [ -z $EXCLUDE ]
+then
+	EXCLFLAG=""
+else
+        EXCLFLAG="--exclude=$EXCLUDE"
+fi
+
+# prepare
+rm -rf $TEMPCHROOT
+apt-get -y install debootstrap
+mkdir $TEMPCHROOT
+# populate chroot
+debootstrap --arch=$ARCH $EXCLFLAG $VARFLAG $VERSION $TEMPCHROOT http://deb.debian.org/debian/
+# clean up space
+chroot $TEMPCHROOT apt-get -y clean
+chroot $TEMPCHROOT rm -rf /var/lib/apt/lists
+# create tarred file
+tar -C $TEMPCHROOT -cf $TEMPFILE .
+
+#docker import - debian-$VERSION$IMGSUFFIX
+#docker tag debian-$VERSION$IMGSUFFIX ${DOCKREPO}:$VERSION$IMGSUFFIX
+#docker push ${DOCKREPO}:$VERSION$IMGSUFFIX
