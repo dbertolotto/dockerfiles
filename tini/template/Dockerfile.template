@@ -1,0 +1,6 @@
+FROM dbertolotto/debian/stretch:minbase
+ENV version v0.18.0
+ADD https://github.com/krallin/tini/releases/download/${version}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
+
