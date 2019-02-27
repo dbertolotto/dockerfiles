@@ -1,0 +1,3 @@
+ADD https://github.com/krallin/tini/releases/download/${version_tini}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]

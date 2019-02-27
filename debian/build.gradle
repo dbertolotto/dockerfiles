@@ -1,18 +1,44 @@
 ext {
+  // defaults
   arch = 'amd64'
   var = 'minbase'
-  ver = "stretch"
+  ver = 'stretch'
   excl = 'none'
+  builddir = buildDir.absolutePath + '/' + ver
+  dockerDir = builddir + '/docker'
+  image_title = 'Debian Stretch'
+  image_description = 'Custom Debian Stretch image'
+  image_ref_name = '-'
+  // properties
   tmpchr = 'tmpchr'
   tmpdocker = 'docker'
   tmpfile = 'tmpfile.tar'
-  builddir = buildDir.absolutePath + '/' + ver
   templateDir = 'template'
   dockername = 'dbertolotto/debian/'
-  imgname = dockername + ver + ':' + var
+}
+
+task prepareStretch {
+  doLast {
+    arch = 'amd64'
+    var = 'minbase'
+    ver = 'stretch'
+    excl = 'none'
+    image_title = 'Debian Stretch'
+    image_description = 'Custom Debian Stretch image'
+  }
+}
+
+task postPrep {
+  doLast {
+    builddir = buildDir.absolutePath + '/' + ver
+    dockerDir = builddir + '/docker'
+    image_ref_name = dockername + ver + ':' + var
+    mkdir dockerDir
+  }
 }
 
 task copyChroot (type: Copy) {
+  dependsOn 'postPrep'
   from templateDir + '/build.template'
   into buildDir.absolutePath + '/' + ver
   rename { file -> 'build' }
@@ -26,42 +52,49 @@ task buildChroot (type: Exec) {
 }
 
 task prepareDocker {
+  dependsOn 'postPrep'
   doLast {
-    def outfile = builddir + '/' + 'Dockerfile.template'
+    def outfile = dockerDir + '/' + 'Dockerfile.template'
     concat(outfile,
            projectDir.absolutePath + '/' + templateDir + '/' + 'Dockerfile-debian.template',
+           rootDir.absolutePath + '/' + templateDir + '/' + 'Dockerfile-tini.template',
            rootDir.absolutePath + '/' + templateDir + '/' + 'Dockerfile-labels.template') 
   }
 }
 
 task copyDocker (type: Copy) {
   dependsOn 'prepareDocker'
-  from builddir + '/' + 'Dockerfile.template'
+  from dockerDir + '/' + 'Dockerfile.template'
   into buildDir.absolutePath + '/' + ver
   rename { file -> 'Dockerfile' }
-  expand(file: tmpfile, image_name: imgname, image_created: getDate())
+  expand(file: tmpfile,
+    version_tini: version_tini,
+    image_created: getDate(),
+    image_authors: image_authors,
+    image_url: image_url,
+    image_documentation: image_documentation,
+    image_source: image_source,
+    image_version: image_version,
+    image_revision: image_revision,
+    image_vendor: image_vendor,
+    image_licenses: image_licenses,
+    image_ref_name: image_ref_name,
+    image_title: image_title,
+    image_description: image_description)
 }
 
 task buildDocker (type: Exec) {
   dependsOn 'copyDocker'
   workingDir builddir
-  commandLine 'docker','build','-t',imgname,'.'
+  commandLine 'docker','build','-t',image_ref_name,'.'
 }
 
-task chrootBuild (type: GradleBuild) {
-  tasks = ['copyChroot','buildChroot']
+task buildStretch (type: GradleBuild) {
+  tasks = ['prepareStretch','buildChroot','buildDocker']
 }
 
-task dockerBuild (type: GradleBuild) {
-  tasks = ['prepareDocker','copyDocker','buildDocker']
-}
-
-task build (type: GradleBuild) {
-  tasks = ['chrootBuild','dockerBuild']
-}
-
-task all (type: GradleBuild) {
-  tasks = ['clean','build']
+task stretch (type: GradleBuild) {
+  tasks = ['clean','buildStretch']
 }
 
 task clean (type:Delete) {

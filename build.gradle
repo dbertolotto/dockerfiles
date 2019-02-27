@@ -36,20 +36,22 @@ plugins {
 }
 
 // common variables
-// Dockerfile-labels.template => see https://github.com/opencontainers/image-spec/blob/master/annotations.md
 ext {
-  image_created = ''
+  // Dockerfile-labels.template => see https://github.com/opencontainers/image-spec/blob/master/annotations.md
+  image_created = '-'
   image_authors = 'Davide Bertolotto (davide.bertolotto@gmail.com)'
-  image_url = ''
-  image_documentation = ''
-  image_source = ''
-  image_version = ''
-  image_revision = ''
+  image_url = '-'
+  image_documentation = '-'
+  image_source = '-'
+  image_version = '-'
+  image_revision = '-'
   image_vendor = 'Davide Bertolotto (davide.bertolotto@gmail.com)' 
-  image_licenses = ''
-  image_ref_name = ''
-  image_title = ''
-  image_description = ''
+  image_licenses = '-'
+  image_ref_name = '-'
+  image_title = '-'
+  image_description = '-'
+  // Dockerfile-tini.template
+  version_tini = 'v0.18.0'
 }
 
 // example
