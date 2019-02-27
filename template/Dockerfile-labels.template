@@ -1,3 +1,12 @@
-LABEL org.label-schema.schema-version = "1.0" \
-      org.label-schema.build-date = "${imgdate}" \
-      org.label-schema.name = "${imgname}"
+LABEL org.opencontainers.image.created = "${image_created}" \
+      org.opencontainers.image.authors = "${image_authors}" \
+      org.opencontainers.image.url = "${image_url}" \
+      org.opencontainers.image.documentation = "${image_documentation}" \
+      org.opencontainers.image.source = "${image_source}" \
+      org.opencontainers.image.version = "${image_version}" \
+      org.opencontainers.image.revision = "${image_revision}" \
+      org.opencontainers.image.vendor = "${image_vendor}" \
+      org.opencontainers.image.licenses = "${image_licenses}" \
+      org.opencontainers.image.ref.name = "${image_ref_name}" \
+      org.opencontainers.image.title = "${image_title}" \
+      org.opencontainers.image.description = "${image_description}"

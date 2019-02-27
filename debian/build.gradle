@@ -27,18 +27,19 @@ task buildChroot (type: Exec) {
 
 task prepareDocker {
   doLast {
-    def outfile = builddir + '/' + 'dftmp'
+    def outfile = builddir + '/' + 'Dockerfile.template'
     concat(outfile,
-           projectDir.absolutePath + '/' + templateDir + '/' + 'Dockerfile.template',
+           projectDir.absolutePath + '/' + templateDir + '/' + 'Dockerfile-debian.template',
            rootDir.absolutePath + '/' + templateDir + '/' + 'Dockerfile-labels.template') 
   }
 }
 
 task copyDocker (type: Copy) {
-  from builddir + '/' + 'dftmp'
+  dependsOn 'prepareDocker'
+  from builddir + '/' + 'Dockerfile.template'
   into buildDir.absolutePath + '/' + ver
   rename { file -> 'Dockerfile' }
-  expand(file: tmpfile, imgname: imgname, imgdate: getDate())
+  expand(file: tmpfile, image_name: imgname, image_created: getDate())
 }
 
 task buildDocker (type: Exec) {
@@ -52,11 +53,15 @@ task chrootBuild (type: GradleBuild) {
 }
 
 task dockerBuild (type: GradleBuild) {
-  tasks = ['copyDocker','buildDocker']
+  tasks = ['prepareDocker','copyDocker','buildDocker']
 }
 
 task build (type: GradleBuild) {
   tasks = ['chrootBuild','dockerBuild']
+}
+
+task all (type: GradleBuild) {
+  tasks = ['clean','build']
 }
 
 task clean (type:Delete) {

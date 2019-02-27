@@ -29,8 +29,30 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 */
-plugins {                                                 id 'base'                                             }
 
+// plugins
+plugins {
+  id 'base'
+}
+
+// common variables
+// Dockerfile-labels.template => see https://github.com/opencontainers/image-spec/blob/master/annotations.md
+ext {
+  image_created = ''
+  image_authors = 'Davide Bertolotto (davide.bertolotto@gmail.com)'
+  image_url = ''
+  image_documentation = ''
+  image_source = ''
+  image_version = ''
+  image_revision = ''
+  image_vendor = 'Davide Bertolotto (davide.bertolotto@gmail.com)' 
+  image_licenses = ''
+  image_ref_name = ''
+  image_title = ''
+  image_description = ''
+}
+
+// example
 allprojects {
   task list {
     doFirst { task ->
@@ -40,10 +62,12 @@ allprojects {
 }
 
 
+// get current date in RFC 3339 format
 def getDate() {
     return new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 }
 
+// concatenate more files to an output file
 def concat(outfile, String... infiles) {
   (new File(outfile)).text = files(*infiles).collect{it.getText()}.join("\n")
 }
