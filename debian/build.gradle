@@ -25,12 +25,20 @@ task buildChroot (type: Exec) {
   commandLine 'bash','build'
 }
 
+task prepareDocker {
+  doLast {
+    def outfile = builddir + '/' + 'dftmp'
+    concat(outfile,
+           projectDir.absolutePath + '/' + templateDir + '/' + 'Dockerfile.template',
+           rootDir.absolutePath + '/' + templateDir + '/' + 'Dockerfile-labels.template') 
+  }
+}
+
 task copyDocker (type: Copy) {
-  concat('df',templateDir + '/Dockerfile.template', '../template/Dockerfile-labels.template')
-  //from df
-  //into buildDir.absolutePath + '/' + ver
-  //rename { file -> 'Dockerfile' }
-  //expand(file: tmpfile, imgname: imgname, imgdate: getDate())
+  from builddir + '/' + 'dftmp'
+  into buildDir.absolutePath + '/' + ver
+  rename { file -> 'Dockerfile' }
+  expand(file: tmpfile, imgname: imgname, imgdate: getDate())
 }
 
 task buildDocker (type: Exec) {
