@@ -18,7 +18,7 @@ ext {
 }
 
 task prepareStretch {
-  doLast {
+  doFirst {
     arch = 'amd64'
     var = 'minbase'
     ver = 'stretch'
@@ -29,11 +29,12 @@ task prepareStretch {
 }
 
 task postPrep {
-  doLast {
+  doFirst {
     builddir = buildDir.absolutePath + '/' + ver
     dockerDir = builddir + '/docker'
     image_ref_name = dockername + ver + ':' + var
     mkdir dockerDir
+    println image_ref_name
   }
 }
 
@@ -86,6 +87,7 @@ task copyDocker (type: Copy) {
 task buildDocker (type: Exec) {
   dependsOn 'copyDocker'
   workingDir builddir
+  println image_ref_name
   commandLine 'docker','build','-t',image_ref_name,'.'
 }
 

@@ -1,0 +1,30 @@
+ext {
+  arch = 'amd64'
+  var = 'minbase'
+  mirror = ''
+  ver = ''
+  version = '3.9.0'
+  excl = 'none'
+  tmpchr = 'tmpchr'
+  tmpfile = 'tmpfile.tar'
+  builddir = buildDir.toString() + '/' + ver
+}
+
+task prepareDir {
+  doLast {
+    mkdir builddir + '/' + tmpchr
+  }
+}
+
+task aptDeps (type: Exec) {
+  commandLine 'apt-get','-y','install','wget'
+}
+
+task getAlpine (type: Exec) {
+  commandLine 'wget', mirror+'/latest-stable/main/x86_64/apk-tools-static-${version}.apk'
+}
+
+
+task clean (type:Delete) {
+  delete buildDir
+}

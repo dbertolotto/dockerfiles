@@ -1,0 +1,27 @@
+ext {
+  var = 0
+}
+
+task task1 {
+  println "configure " + task1.name
+  doFirst {
+    var = 1
+    println var + ' from task1'
+  }
+}
+
+task task2 {
+  println "configure " + task2.name
+  dependsOn 'task1'
+  doFirst {
+    var = 2
+    println var + ' from task2'
+  }
+}
+
+task task3 (type: Exec) {
+  println "configure " + task3.name
+  dependsOn 'task2'
+  //var = 3
+  commandLine 'echo',var
+}
